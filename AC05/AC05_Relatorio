@@ -1,0 +1,57 @@
+# AC05 — Evolução da Cena: Materiais PBR e Texturas
+
+**Aluno:** Henrique Sartori  
+**Software:** Blender 4.5 LTS  
+**Projeto:** Ibmec: Arquitetura do Futuro  
+**Arquivo:** `AC05_HenriqueSartori.blend`  
+**Base:** cópia da AC04, com câmera, iluminação, cenografia e composição preservadas.
+
+## Materiais dos três objetos autorais
+
+| Objeto | Material | Base Color / cor | Metallic | Roughness | Textura de imagem |
+|---|---|---|---:|---:|---|
+| `Obj_PlataformaAscensao` | `MAT_AC05_Metal_Plataforma_PolyHaven` | Poly Haven `metal_plate_diff_1k.jpg`, com tonalização azul suave | 0.86 | Mapa de rugosidade remapeado de 0.18 a 0.62 (base 0.32) | Sim |
+| `Obj_TorresConexao` | `MAT_AC05_Madeira_Torres_Autoral` | Imagem de veios de madeira escura gerada em Python | 0.00 | 0.44 | Sim |
+| `Obj_PortalFuturo` | `MAT_AC05_Espelho_Portal` | RGB (0.68, 0.82, 0.97), aparência de metal cromado frio | 1.00 | 0.065 | Não, cor sólida PBR |
+
+O primeiro material simula metal de superfície ligeiramente irregular. O segundo representa madeira escurecida em um ambiente de arquitetura tecnológica. O terceiro utiliza rugosidade muito baixa e alta metalicidade para um acabamento espelhado. **Todos usam Principled BSDF.**
+
+## Ligações dos mapas de textura
+
+**Plataforma — três mapas de imagem Poly Haven:**
+
+- `UV Map → Mapping → Image Texture (Base Color, sRGB) → Mix Color (leve tonalização) → Principled BSDF / Base Color`.
+- `UV Map → Mapping → Image Texture (Roughness, Non-Color) → Map Range (0.18–0.62) → Principled BSDF / Roughness`.
+- `UV Map → Mapping → Image Texture (Normal GL, Non-Color) → Normal Map (Strength 0.38) → Principled BSDF / Normal`.
+
+**Torres:** `UV Map → Mapping → Image Texture (madeira, sRGB) → Base Color`. Um `Noise Texture` procedimental alimenta `Bump → Normal` para relevo discreto. Esse relevo **não** é apresentado como mapa normal de imagem.
+
+**Portal:** Principled BSDF de metal altamente polido, sem textura de imagem, com Coat Weight 0.22 e Coat Roughness 0.08.
+
+## UV Mapping
+
+- **Plataforma:** *Smart UV Project*, margem de ilha 0.025. O método distribui as superfícies poligonais por ilhas para reduzir distorções nas paredes laterais e nos degraus; o material utiliza UV Map explícito.
+- **Torres:** mapeamento cilíndrico programático, com orientação longitudinal dos veios. As faces horizontais recebem projeção plana; as laterais recebem U angular e V proporcional à altura.
+- O mapa UV é aplicado à geometria original da torre; a segunda torre é reproduzida por Mirror Modifier.
+- Conferir visualmente o UV Editor e ajustar ilhas caso sejam observadas emendas ou deformações excessivas.
+
+## Iluminação e composição
+
+As luzes Area e a câmera da AC04 foram preservadas. Espera-se que a iluminação realce as irregularidades do metal, a textura menos reflexiva da madeira e os highlights concentrados do portal espelhado. **Após abrir o PNG, confirmar e registrar os efeitos realmente observados.**
+
+A marca **Ibmec** mantém o objeto, a tipografia e o material da AC04, sem aplicação de madeira, metal texturizado ou normal map sobre as letras.
+
+## Fontes e licenças
+
+- **Poly Haven — Metal Plate:** https://polyhaven.com/a/metal_plate — **CC0**, mapas Base Color, Roughness e Normal GL, resolução 1K. Usado na plataforma.
+- **Madeira autoral:** textura PNG gerada pelo código `AC05_HenriqueSartori.py`, sem biblioteca externa. Usada nas torres.
+- **Kenney Space Kit:** https://kenney.nl/assets/space-kit — **CC0**, modelos de apoio importados na AC04 e preservados nesta evolução.
+- O script executa `Pack Resources` para incorporar ao arquivo `.blend` os mapas de imagem utilizados.
+
+## Entregáveis visuais pendentes de captura no Blender
+
+1. `AC05_RenderFinal.png` — render pela câmera principal, gerado pelo script.
+2. `AC05_ShaderEditor.png` — captura REAL dos nós do material da plataforma no Shader Editor (mostrar Base Color, Roughness, Normal Map e Principled BSDF).
+3. `AC05_UVEditor.png` — captura REAL do UV Editor com `Obj_PlataformaAscensao` em Edit Mode e a imagem `metal_plate_diff_1k.jpg` exibida.
+
+**Revisão antes da entrega:** verificar imagem final, orientação da madeira, UVs, legibilidade do Ibmec e disponibilidade de todas as texturas no `.blend` reaberto.
